@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 # Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./database.db")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -36,3 +36,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Application settings
 DEBUG = os.getenv("DEBUG", "True") == "True"
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")

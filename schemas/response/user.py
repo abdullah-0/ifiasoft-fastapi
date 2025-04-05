@@ -1,17 +1,17 @@
-from pydantic import BaseModel, computed_field
+
+
 from datetime import datetime
 
+from pydantic import BaseModel, computed_field
 
-class UserBase(BaseModel):
+
+class UserResponse(BaseModel):
     id: int
     email: str
     first_name: str
     middle_name: str
     last_name: str
     is_active: bool
-
-
-class UserResponse(UserBase):
     created_at: datetime
     updated_at: datetime
 
@@ -26,3 +26,12 @@ class UserResponse(UserBase):
 
     class Config:
         from_attributes = True
+
+
+class TokenResponse(BaseModel):
+    access: str
+    refresh: str
+
+class UserAuthResponse(BaseModel):
+    user : UserResponse
+    token :TokenResponse

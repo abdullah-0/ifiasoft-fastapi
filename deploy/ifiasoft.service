@@ -3,8 +3,8 @@ Description=IfiaSoft FastAPI Application
 After=network.target
 
 [Service]
-User=ifiauser
-Group=ifiauser
+User=ubuntu
+Group=ubuntu
 WorkingDirectory=/opt/ifiasoft
 Environment="PATH=/opt/ifiasoft/venv/bin"
 Environment="PYTHONPATH=/opt/ifiasoft"

@@ -4,12 +4,12 @@
 set -e
 
 # Configuration
-APP_NAME="ifiasoft"
+APP_NAME="ifiasoft-fastapi"
 APP_DIR="/opt/$APP_NAME"
 VENV_DIR="$APP_DIR/venv"
-REPO_URL="https://github.com/yourusername/ifiasoft.git"
+REPO_URL="git@github.com:abdullah-0/ifiasoft-fastapi.git"
 BRANCH="main"
-DOMAIN="your-domain.com"  # Replace with your domain
+DOMAIN="api.ifiasoft.com"
 
 # Create application directory if it doesn't exist
 sudo mkdir -p $APP_DIR
@@ -32,9 +32,6 @@ fi
 source $VENV_DIR/bin/activate
 pip install --upgrade pip
 pip install -r $APP_DIR/requirements.txt
-
-# Create static directory
-sudo mkdir -p $APP_DIR/static
 
 # Copy service file
 sudo cp $APP_DIR/deploy/$APP_NAME.service /etc/systemd/system/
@@ -62,7 +59,7 @@ fi
 if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
     sudo apt-get update
     sudo apt-get install -y certbot python3-certbot-nginx
-    sudo certbot --nginx -d $DOMAIN --non-interactive --agree-tos --email your-email@example.com
+    sudo certbot --nginx -d $DOMAIN --non-interactive --agree-tos --email mabdullah.tahirk@gmail.com
 fi
 
 # Reload systemd and restart service
