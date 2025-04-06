@@ -1,13 +1,14 @@
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from config import get_db
 from models.product import Product
 from models.user import User
 from schemas.request.product import ProductCreate, ProductUpdate
 from schemas.response.product import ProductResponse
 from utils import get_current_user
+from utils.auth import get_db
 
 router = APIRouter(prefix="/products", tags=["Products"])
 

@@ -1,6 +1,8 @@
 import datetime
+
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import relationship
+
 from config import Base
 from .enums import InvoiceStatus
 
@@ -18,9 +20,6 @@ class Invoice(Base):
     tax_amount = Column(Float, default=0)
     total = Column(Float, nullable=False)
     notes = Column(String(1000))
-
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    customer = relationship("Customer", backref="invoices")
 
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
     organization = relationship("Organization", back_populates="invoices")

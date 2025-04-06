@@ -1,33 +1,34 @@
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from config import get_db
-from models.customer import Customer
+from models.client import Client
 from models.user import User
 from schemas.request.customer import CustomerCreate, CustomerUpdate
 from schemas.response.customer import CustomerResponse
 from utils import get_current_user
+from utils.auth import get_db
 
-router = APIRouter(prefix="/customers", tags=["Customers"])
+router = APIRouter(prefix="/client", tags=["Client"])
 
 
 @router.get("", response_model=List[CustomerResponse])
-def get_customers(
+def get_client(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
     skip: int = 0,
     limit: int = 100,
 ):
-    """Get all customers for the current user's organization"""
-    customers = (
-        db.query(Customer)
-        .filter(Customer.organization_id == current_user.organization_id)
+    """Get all clients for the current user's organization"""
+    clients = (
+        db.query(Client)
+        .filter(Client.organization_id == current_user.organization_id)
         .offset(skip)
         .limit(limit)
         .all()
     )
-    return customers
+    return clients
 
 
 @router.get("/{customer_id}", response_model=CustomerResponse)
@@ -38,10 +39,10 @@ def get_customer(
 ):
     """Get a specific customer by ID"""
     customer = (
-        db.query(Customer)
+        db.query(Client)
         .filter(
-            Customer.id == customer_id,
-            Customer.organization_id == current_user.organization_id,
+            Client.id == customer_id,
+            Client.organization_id == current_user.organization_id,
         )
         .first()
     )

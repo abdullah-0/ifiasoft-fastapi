@@ -1,11 +1,13 @@
 import datetime
+
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+
 from config import Base
 
 
-class Customer(Base):
-    __tablename__ = "customers"
+class Client(Base):
+    __tablename__ = "clients"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
@@ -16,7 +18,7 @@ class Customer(Base):
     is_active = Column(Boolean, default=True)
 
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
-    organization = relationship("Organization", back_populates="customers")
+    organization = relationship("Organization", back_populates="client")
 
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     updated_at = Column(

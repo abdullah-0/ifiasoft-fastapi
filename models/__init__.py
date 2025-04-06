@@ -1,3 +1,12 @@
 from .invoice import Invoice
 from .product import Product
-from .user import User
+from .token import Token
+from .user import User, Role
+
+__all__ = [
+    'Invoice',
+    'Product',
+    'Token',
+    'User',
+    'Role',
+]

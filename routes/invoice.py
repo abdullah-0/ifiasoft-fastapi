@@ -3,12 +3,12 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from config import get_db
 from models.invoice import Invoice, InvoiceItem
 from models.user import User
 from schemas.request.invoice import InvoiceCreate, InvoiceUpdate
 from schemas.response.invoice import InvoiceResponse
 from utils import get_current_user
+from utils.auth import get_db
 
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
 
@@ -21,12 +21,7 @@ def get_invoices(
     limit: int = 100,
 ):
     """Get all invoices for the current user's organization"""
-    invoices = (
-        db.query(Invoice)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    invoices = db.query(Invoice).offset(skip).limit(limit).all()
     return invoices
 
 
