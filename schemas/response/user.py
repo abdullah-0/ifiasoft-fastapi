@@ -1,5 +1,3 @@
-
-
 from datetime import datetime
 
 from pydantic import BaseModel, computed_field
@@ -32,6 +30,7 @@ class TokenResponse(BaseModel):
     access: str
     refresh: str
 
+
 class UserAuthResponse(BaseModel):
-    user : UserResponse
-    token :TokenResponse
+    user: UserResponse
+    token: TokenResponse

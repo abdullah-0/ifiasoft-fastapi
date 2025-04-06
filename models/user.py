@@ -1,11 +1,9 @@
 import datetime
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 
 from config import Base
-
-
-# from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -28,9 +26,20 @@ class User(Base):
         default=datetime.datetime.now(datetime.UTC),
         onupdate=datetime.datetime.now(datetime.UTC),
     )
-    #
-    # organization_id = Column(Integer, ForeignKey("organizations.id"))
-    # organization = relationship("Organization", back_populates="users")
-    #
-    # role_id = Column(Integer, ForeignKey("roles.id"))
-    # role = relationship("Role", back_populates="users")
+
+    role_id = Column(Integer, ForeignKey("roles.id"))
+    role = relationship("Role", back_populates="users")
+
+
+class Role(Base):
+    __tablename__ = "roles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    permissions = Column(String)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    updated_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC),
+        onupdate=datetime.datetime.now(datetime.UTC),
+    )
+
+    users = relationship("User", back_populates="role")
