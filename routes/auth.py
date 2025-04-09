@@ -1,27 +1,24 @@
 from datetime import datetime
-from typing import Dict, Any
 
 import jwt
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from config import get_db, SECRET_KEY, ALGORITHM
-from models.user import User
-from schemas.request.user import Token, UserCreate, TokenRefresh
-from schemas.response.user import UserResponse
+from models.user import User, Token
+from schemas.request import UserLogin, UserCreate, RefreshToken
+from schemas.response import UserAuthResponse, TokenResponse, UserResponse
 from utils import (
     verify_password,
     get_password_hash,
     get_current_user,
 )
 from utils.auth import create_tokens
-from utils.email import email_service
 
 router = APIRouter(prefix="/auth", tags=["Authentication & User"])
 
 
-@router.post("/register", response_model=Dict[str, Any])
+@router.post("/register", response_model=UserAuthResponse, status_code=201)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
@@ -40,27 +37,23 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(db_user)
 
     # Send verification email
-    email_service.send_verification_email(
-        db_user.email, db_user.email_verification_token
-    )
+    # email_service.send_verification_email(
+    #     db_user.email, db_user.email_verification_token
+    # )
 
     # Create tokens
-    access_token, refresh_token = create_tokens(db_user.id, db)
+    tokens = create_tokens(db_user.id, db)
 
     return {
         "user": db_user,
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
+        "token": tokens,
     }
 
 
-@router.post("/token", response_model=Token)
-def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
-):
-    user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.password):
+@router.post("/token", response_model=UserAuthResponse)
+def login_for_access_token(request_data: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == request_data.email).first()
+    if not user or not verify_password(request_data.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -73,17 +66,15 @@ def login_for_access_token(
             detail="Email not verified",
         )
 
-    access_token, refresh_token = create_tokens(user.id, db)
+    tokens = create_tokens(user.id, db)
     return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
+        "user": user,
+        "token": tokens,
     }
 
-
-@router.post("/refresh", response_model=Token)
+@router.post("/refresh", response_model=TokenResponse)
 def refresh_token(
-    token_data: TokenRefresh,
+    token_data: RefreshToken,
     db: Session = Depends(get_db),
 ):
     try:
@@ -122,13 +113,9 @@ def refresh_token(
         db.commit()
 
         # Create new tokens
-        access_token, refresh_token = create_tokens(user_id, db)
+        tokens = create_tokens(user_id, db)
 
-        return {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-        }
+        return tokens
     except jwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -171,6 +158,11 @@ def verify_email(
     return {"message": "Email verified successfully"}
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/user/me", response_model=UserResponse)
 def read_user_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.delete("/user/", responses={}, status_code=204)
+def read_user_me(current_user: User = Depends(get_current_user)):
+    return

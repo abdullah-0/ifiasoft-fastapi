@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, EmailStr
 
 
-class CustomerBase(BaseModel):
+class ClientBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     email: EmailStr | None = None
     phone: str | None = Field(None, max_length=20)
@@ -9,11 +9,11 @@ class CustomerBase(BaseModel):
     tax_number: str | None = Field(None, max_length=50)
 
 
-class CustomerCreate(CustomerBase):
+class ClientCreate(ClientBase):
     pass
 
 
-class CustomerUpdate(BaseModel):
+class ClientUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=255)
     email: EmailStr | None = None
     phone: str | None = Field(None, max_length=20)

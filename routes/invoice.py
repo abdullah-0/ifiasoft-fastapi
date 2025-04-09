@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from models.invoice import Invoice, InvoiceItem
 from models.user import User
-from schemas.request.invoice import InvoiceCreate, InvoiceUpdate
-from schemas.response.invoice import InvoiceResponse
+from schemas.request import InvoiceCreate, InvoiceUpdate
+from schemas.response import InvoiceResponse
 from utils import get_current_user
 from utils.auth import get_db
 

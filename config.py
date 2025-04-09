@@ -1,7 +1,8 @@
 import os
 
 from dotenv import load_dotenv
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
+from passlib.context import CryptContext
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -27,7 +28,10 @@ def get_db():
 
 
 # Dependency for JWT token
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# OAuth2 scheme
+oauth2_scheme = HTTPBearer
 
 # JWT Configuration
 SECRET_KEY = os.getenv("SECRET_KEY")

@@ -34,3 +34,17 @@ class TokenResponse(BaseModel):
 class UserAuthResponse(BaseModel):
     user: UserResponse
     token: TokenResponse
+
+
+class OrganizationBase(BaseModel):
+    name: str
+    description: str | None = None
+
+
+class OrganizationResponse(OrganizationBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True

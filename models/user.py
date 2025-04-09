@@ -18,7 +18,7 @@ class Organization(Base):
     email = Column(String(127), unique=True)
     website = Column(String(127))
     is_active = Column(Boolean, default=True)
-    
+
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     updated_at = Column(
         DateTime,
@@ -29,6 +29,8 @@ class Organization(Base):
     # Relationships
     users = relationship("User", back_populates="organization")
     invoices = relationship("Invoice", back_populates="organization")
+    products = relationship("Product", back_populates="organization")
+    clients = relationship("Client", back_populates="organization")
 
 
 class User(Base):
@@ -79,3 +81,18 @@ class Role(Base):
     )
 
     users = relationship("User", back_populates="role")
+
+
+class Token(Base):
+    __tablename__ = "tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    jti = Column(String(36), unique=True, index=True)
+    token_type = Column(String(10))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    revoked = Column(Boolean, default=False)
+    expires_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+
+    # Relationship
+    user = relationship("User", back_populates="tokens")

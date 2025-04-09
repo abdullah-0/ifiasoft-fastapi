@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from models.product import Product
 from models.user import User
-from schemas.request.product import ProductCreate, ProductUpdate
-from schemas.response.product import ProductResponse
+from schemas.request import ProductCreate, ProductUpdate
+from schemas.response import ProductResponse
 from utils import get_current_user
 from utils.auth import get_db
 

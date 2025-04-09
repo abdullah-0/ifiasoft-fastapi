@@ -24,6 +24,12 @@ class Invoice(Base):
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
     organization = relationship("Organization", back_populates="invoices")
 
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
+    client = relationship("Client", back_populates="invoices")
+
+    # Define the items relationship explicitly
+    items = relationship("InvoiceItem", back_populates="invoice")
+
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     updated_at = Column(
         DateTime,
@@ -41,10 +47,10 @@ class InvoiceItem(Base):
     subtotal = Column(Float, nullable=False)
 
     invoice_id = Column(Integer, ForeignKey("invoices.id"), nullable=False)
-    invoice = relationship("Invoice", backref="items")
+    invoice = relationship("Invoice", back_populates="items")
 
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    product = relationship("Product")
+    product = relationship("Product", back_populates="invoice_items")
 
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     updated_at = Column(

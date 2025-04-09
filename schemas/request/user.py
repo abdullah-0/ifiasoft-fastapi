@@ -16,11 +16,19 @@ class UserLogin(UserBase):
     password: str
 
 
-class Token(BaseModel):
-    access_token: str
+class RefreshToken(BaseModel):
     refresh_token: str
-    token_type: str
 
 
-class TokenRefresh(BaseModel):
-    refresh_token: str
+class OrganizationBase(BaseModel):
+    name: str
+    description: str | None = None
+
+
+class OrganizationCreate(OrganizationBase):
+    pass
+
+
+class OrganizationUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None

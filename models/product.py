@@ -19,6 +19,9 @@ class Product(Base):
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
     organization = relationship("Organization", back_populates="products")
 
+    # Add relationship to invoice items
+    invoice_items = relationship("InvoiceItem", back_populates="product")
+
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     updated_at = Column(
         DateTime,

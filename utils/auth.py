@@ -1,11 +1,9 @@
 import uuid
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
+from typing import Optional
 
 import jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from config import (
@@ -13,16 +11,9 @@ from config import (
     ALGORITHM,
     ACCESS_TOKEN_EXPIRE_MINUTES,
     REFRESH_TOKEN_EXPIRE_DAYS,
-    get_db,
+    get_db, pwd_context, oauth2_scheme,
 )
-from models.token import Token
-from models.user import User
-
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# OAuth2 scheme
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+from models.user import User, Token
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -33,7 +24,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_tokens(user_id: int, db: Session) -> Tuple[str, str]:
+def create_tokens(user_id: int, db: Session) -> dict[str, str]:
     """
     Create access and refresh tokens for a user.
 
@@ -80,7 +71,7 @@ def create_tokens(user_id: int, db: Session) -> Tuple[str, str]:
     db.add(db_refresh_token)
     db.commit()
 
-    return access_token, refresh_token
+    return {"access": access_token, "refresh": refresh_token}
 
 
 def create_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

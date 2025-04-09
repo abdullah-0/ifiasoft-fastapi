@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
-class CustomerResponse(BaseModel):
+class ClientResponse(BaseModel):
     id: int
     name: str
     email: EmailStr | None
